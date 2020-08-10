@@ -15,6 +15,10 @@ public class Worker implements Comparable<Worker>{
         return idCounter++;
     }
 
+    private static ZonedDateTime setCreationDate() {
+        return ZonedDateTime.now();
+    }
+
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -24,11 +28,11 @@ public class Worker implements Comparable<Worker>{
     private java.time.LocalDateTime endDate; //Поле может быть null
     private Status status; //Поле не может быть null
     private Organization organization; //Поле может быть null
-    public Worker(String name, Coordinates coordinates, ZonedDateTime creationDate, Double salary, ZonedDateTime startDate, LocalDateTime endDate, Status status, Organization organization) {
+    public Worker(String name, Coordinates coordinates, Double salary, ZonedDateTime startDate, LocalDateTime endDate, Status status, Organization organization) {
         this.id = setID();
         this.name = name;
         this.coordinates = coordinates;
-        this.creationDate = creationDate;
+        this.creationDate = setCreationDate();
         this.salary = salary;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -115,16 +119,16 @@ public class Worker implements Comparable<Worker>{
 
     @Override
     public String toString() {
-        return "Worker{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", coordinates=" + coordinates +
-                ", creationDate=" + creationDate +
-                ", salary=" + salary +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", status=" + status +
-                ", organization=" + organization +
-                '}';
+        return "Worker { " +
+                "id = " + id +
+                ", name = " + name +
+                ", coordinates = " + coordinates +
+                ", creationDate = " + creationDate +
+                ", salary = " + salary +
+                ", startDate = " + startDate +
+                ", endDate = " + endDate +
+                ", status = " + status +
+                ", organization = " + organization +
+                " }";
     }
 }

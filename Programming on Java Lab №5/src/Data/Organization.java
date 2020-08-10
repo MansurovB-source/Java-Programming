@@ -41,10 +41,10 @@ public class Organization {
 
     @Override
     public String toString() {
-        return "Organization{" +
-                "employeesCount=" + employeesCount +
-                ", type=" + type +
-                ", officialAddress=" + officialAddress +
-                '}';
+        return "Organization { " +
+                "employeesCount = " + employeesCount +
+                ", type = " + type +
+                ", officialAddress = " + officialAddress +
+                " }";
     }
 }

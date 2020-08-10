@@ -31,9 +31,9 @@ public class Address {
 
     @Override
     public String toString() {
-        return "Address{" +
-                "street='" + street + '\'' +
-                ", zipCode='" + zipCode + '\'' +
-                '}';
+        return " Address { " +
+                "street = " + street +
+                ", zipCode = " + zipCode +
+                " }";
     }
 }

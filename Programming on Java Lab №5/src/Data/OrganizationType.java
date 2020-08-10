@@ -12,9 +12,4 @@ public enum OrganizationType {
 
     OrganizationType() {
     }
-
-    @Override
-    public String toString() {
-        return "OrganizationType{}";
-    }
 }

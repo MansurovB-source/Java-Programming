@@ -5,14 +5,15 @@ import Parser.WorkerParser;
 import TypeAdaptor.ZonedDateTimeTypeAdaptor;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.internal.bind.util.ISO8601Utils;
 import com.google.gson.reflect.TypeToken;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+import org.w3c.dom.ls.LSOutput;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -20,32 +21,16 @@ import java.util.*;
  * Author: Behruz Mansurov
  */
 public class WorkerManager {
-    public static void main(String[] args) {
-        WorkerManager workerManager = new WorkerManager();
-        //workerManager.help();
-        Coordinates coordinates = new Coordinates(999, (long) 995);
-        ZonedDateTime zonedDateTime = ZonedDateTime.now();
-        LocalDateTime localDateTime = LocalDateTime.now().minusYears(5);
-        Address address = new Address("fuck", "bitch");
-        Organization organization = new Organization(2555, OrganizationType.COMMERCIAL, address);
-
-
-//        Worker worker = new Worker("Behruz", coordinates, 250000.0, zonedDateTime, localDateTime, Status.REGULAR, organization);
-//        Worker worker1 = new Worker("Behruz1", coordinates, 250000.0, zonedDateTime, localDateTime, Status.REGULAR, organization);
-//        Worker worker2 = new Worker("Behruz2", coordinates, 250000.0, zonedDateTime, localDateTime, Status.REGULAR, organization);
-//        workerManager.workerList.add(worker);
-//        workerManager.workerList.add(worker1);
-//        workerManager.workerList.add(worker2);
-//        workerManager.save();
-        workerManager.importData(new File("Data.json"));
-        System.out.println(workerManager.workerList.toString());
-
-    }
-
-    private List<Worker> workerList = new LinkedList<>();
+    private List<Worker> workerList;
     private LocalDateTime initDate;
     private File file;
-    Gson gson = ZonedDateTimeTypeAdaptor.getGsonBuilder().serializeNulls().create();
+    private static Gson gson = ZonedDateTimeTypeAdaptor.getGsonBuilder().serializeNulls().create();
+
+    public WorkerManager(String file) {
+        workerList = new LinkedList<>();
+        initDate = LocalDateTime.now();
+        importData(new File(file));
+    }
 
     public void importData(File file) {
         try {
@@ -98,9 +83,9 @@ public class WorkerManager {
         System.out.println("Lab 5 made by Behruz Mansurov\n" +
                 "\"help : вывести справку по доступным командам\"\n" +
                 "\"info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)\"\n" +
-                "\"add {element} : добавить новый элемент в коллекцию\"\n" +
-                "\"update id {element} : обновить значение элемента коллекции, id которого равен заданному\"\n" +
-                "\"remove_by_id id : удалить элемент из коллекции по его id\"\n" +
+                "\"add : добавить новый элемент в коллекцию\"\n" +
+                "\"update_by_id : обновить значение элемента коллекции, id которого равен заданному\"\n" +
+                "\"remove_by_id : удалить элемент из коллекции по его id\"\n" +
                 "\"clear : очистить коллекцию\"\n" +
                 "\"save : сохранить коллекцию в файл\"\n" +
                 "\"execute_script file_name : считать и исполнить скрипт из указанного файла. " +
@@ -109,9 +94,9 @@ public class WorkerManager {
                 "\"remove_first : удалить первый элемент из коллекции\"\n" +
                 "\"remove_last : удалить последний элемент из коллекции\"\n" +
                 "\"shuffle : перемешать элементы коллекции в случайном порядке\"\n" +
-                "\"remove_any_by_start_date startDate : удалить из коллекции один элемент, значение поля startDate которого эквивалентно заданному\"\n" +
+                "\"remove_any_by_start_date : удалить из коллекции один элемент, значение поля startDate которого эквивалентно заданному\"\n" +
                 "\"max_by_id : вывести любой объект из коллекции, значение поля id которого является максимальным\"\n" +
-                "\"count_less_than_organization organization : вывести количество элементов, значение поля organization которых меньше заданного\""
+                "\"count_less_than_organization : вывести количество элементов, значение поля organization которых меньше заданного\""
         );
     }
 
@@ -123,24 +108,37 @@ public class WorkerManager {
         );
     }
 
-    public void add(Worker worker) {
-        workerList.add(worker);
+    public void show() {
+        System.out.println(workerList.toString());
     }
 
-    public void updateById(int id, int updateId) {
+    public void add(Worker worker) {
+        workerList.add(worker);
+        System.out.println("Объект успешно добавлен в коллекцию");
+    }
+
+    public void updateById(long id, long updateId) {
         for (Worker w : workerList) {
             if (w.getId() == id) {
                 w.setId(updateId);
             }
         }
+        System.out.println("Если был объект с таким id, id объекта было обновлено");
     }
 
-    public void removeById(int id) {
+    public void removeById(long id) {
+        int l = workerList.size();
         workerList.removeIf(w -> w.getId() == id);
+        if(l == workerList.size()) {
+            System.out.println("Не существует оюъект с таким id");
+        } else {
+            System.out.println("Объект успешно удален");
+        }
     }
 
     public void clear() {
         workerList.clear();
+        System.out.println("Коллекция удалена");
     }
 
     public void save() {
@@ -152,27 +150,42 @@ public class WorkerManager {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    public void executeScript(File file) {
+        System.out.println("Коллекция сохранена в файл");
     }
 
     public void removeFirst() {
-        workerList.remove(1);
+        if(workerList.size() != 0) {
+            workerList.remove(1);
+            System.out.println("Удален первый элемент");
+        } else {
+            System.out.println("Коллекция пуста");
+        }
+
     }
 
-    public void  removeLast() {
-        ListIterator<Worker> listIterator = workerList.listIterator();
-        listIterator.previous();
-        listIterator.remove();
+    public void removeLast() {
+        if(workerList.size() != 0) {
+            ListIterator<Worker> listIterator = workerList.listIterator();
+            listIterator.previous();
+            listIterator.remove();
+            System.out.println("Удален последний элемент");
+        } else {
+            System.out.println("Коллекция пуста");
+        }
     }
 
     public void shuffle() {
-        Collections.shuffle(workerList);
+        if(workerList.size() != 0) {
+            Collections.shuffle(workerList);
+        } else System.out.println("Коллекция пуста");
     }
 
-    public void removeAnyVyStartDate(ZonedDateTime date) {
-        workerList.removeIf(w -> w.getCreationDate().equals(date));
+    public void removeAnyByStartDate(ZonedDateTime date) {
+        int l = workerList.size();
+        workerList.removeIf(w -> w.getStartDate().equals(date));
+        if(l == workerList.size()) {
+            System.out.println("Объект с таким startdate не существует");
+        } else System.out.println("Объект был удален");
     }
 //    public void removeAnyByStartDate(String date) {
 //        ZoneId timeZone = ZoneId.systemDefault();
@@ -189,15 +202,17 @@ public class WorkerManager {
 //    }
 
     public void maxById() {
-        System.out.println(Collections.max(workerList));
+        System.out.println("Max : " + Collections.max(workerList));
     }
 
     public void countLessThanOrganization(Organization organization) {
-        for(Worker w : workerList) {
-            if(w.getOrganization().getEmployeesCount() < organization.getEmployeesCount()) {
-                System.out.println(w);
+        int cnt = 0;
+        for (Worker w : workerList) {
+            if (w.getOrganization().getEmployeesCount() < organization.getEmployeesCount()) {
+                cnt++;
             }
         }
+        System.out.println("Количество элементов, значение поля organization которых меньше заданного " + cnt);
         //        Iterator<Worker> iterator = workerList.iterator();
 //        while(iterator.hasNext()) {
 //            if(iterator.next().getOrganization().getEmployeesCount() < organization.getEmployeesCount()) {

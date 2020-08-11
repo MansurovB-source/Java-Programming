@@ -1,7 +1,6 @@
 package Parser;
 
 import Data.*;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -20,6 +19,28 @@ public class UserInputParser {
     private long cnt;
     private ZoneId timeZone = ZoneId.systemDefault();
 
+    public long inputId() {
+        System.out.println("Введите id: ");
+        if (in.hasNextLong()) {
+            cnt = in.nextLong();
+            if (cnt > 0) {
+                check = true;
+                System.out.println();
+                in.nextLine();
+            } else
+                System.out.println("Wrong value please repeat!");
+            System.out.println();
+        } else {
+            System.out.println("Wrong value please repeat!");
+            System.out.println();
+            in.next();
+            check = false;
+        }
+        check = false;
+        return cnt;
+    }
+
+
     public String inputName() {
         while (!check) {
             System.out.print("Введите имя: ");
@@ -31,7 +52,7 @@ public class UserInputParser {
 //                    in.nextLine();
                 } else
                     System.out.println("Wrong value please repeat!");
-                    System.out.println();
+                System.out.println();
             } else {
                 System.out.println("Wrong value please repeat!");
                 System.out.println();
@@ -92,7 +113,7 @@ public class UserInputParser {
 
     public ZonedDateTime inputStartDate() {
         ZonedDateTime zonedDateTime;
-        System.out.println("Введите дату поступления в формате YYYY-MM-DD HH:MM:SS");
+        System.out.println("Введите дату поступления в формате YYYY-MM-DDTHH:MM:SS");
         read = in.nextLine();
         zonedDateTime = LocalDateTime.parse(read,
                 DateTimeFormatter.ISO_DATE_TIME).atZone(timeZone);
@@ -133,7 +154,7 @@ public class UserInputParser {
                     System.out.println();
                 } else
                     System.out.println("Wrong value please repeat!");
-                    System.out.println();
+                System.out.println();
             } else {
                 System.out.println("Wrong value please repeat! ");
                 System.out.println();

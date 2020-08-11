@@ -7,12 +7,12 @@ import java.time.ZonedDateTime;
  * Created by IntelliJ IDEA.
  * Author: Behruz Mansurov
  */
-public class Worker implements Comparable<Worker>{
+public class Worker implements Comparable<Worker> {
 
     private static long idCounter = 0;
 
-    public static  long setID() {
-        return idCounter++;
+    public static long setID() {
+        return ++idCounter;
     }
 
     private static ZonedDateTime setCreationDate() {
@@ -28,6 +28,7 @@ public class Worker implements Comparable<Worker>{
     private java.time.LocalDateTime endDate; //Поле может быть null
     private Status status; //Поле не может быть null
     private Organization organization; //Поле может быть null
+
     public Worker(String name, Coordinates coordinates, Double salary, ZonedDateTime startDate, LocalDateTime endDate, Status status, Organization organization) {
         this.id = setID();
         this.name = name;

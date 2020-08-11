@@ -7,6 +7,7 @@ package Data;
 public class Coordinates {
     private int x; //Значение поля должно быть больше -912
     private Long y; //Максимальное значение поля: 139, Поле не может быть null
+
     public Coordinates(int x, Long y) {
         this.x = x;
         this.y = y;

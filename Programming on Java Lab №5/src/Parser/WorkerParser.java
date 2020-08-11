@@ -9,7 +9,8 @@ import Data.Worker;
 public class WorkerParser {
     public static boolean parse(Worker worker) {
         return worker.getId() != 0 &&
-                worker.getName() != null && worker.getName().equals("") &&
+                worker.getName() != null && !
+                worker.getName().equals("") &&
                 worker.getCoordinates() != null && worker.getCoordinates().getX() > -912 && worker.getCoordinates().getY() > 139 &&
                 worker.getCreationDate() != null &&
                 (worker.getSalary() == null || worker.getSalary() > 0) &&

@@ -1,4 +1,4 @@
-package Data;
+package Common.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
-package Parser;
+package Common.Parser;
 
-import Data.*;
+import Common.Data.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

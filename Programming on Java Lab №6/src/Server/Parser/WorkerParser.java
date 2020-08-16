@@ -1,6 +1,6 @@
-package Parser;
+package Server.Parser;
 
-import Data.Worker;
+import Common.Data.Worker;
 
 /**
  * Created by IntelliJ IDEA.

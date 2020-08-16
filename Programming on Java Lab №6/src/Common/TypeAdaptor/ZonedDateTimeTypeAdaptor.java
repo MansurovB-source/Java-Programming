@@ -1,4 +1,4 @@
-package TypeAdaptor;
+package Common.TypeAdaptor;
 
 import com.google.gson.*;
 

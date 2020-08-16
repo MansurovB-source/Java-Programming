@@ -1,14 +1,12 @@
-package Manager;
+package Server;
 
-import Data.*;
-import Parser.WorkerParser;
-import TypeAdaptor.ZonedDateTimeTypeAdaptor;
+import Common.Data.Organization;
+import Common.Data.Worker;
+import Server.Parser.WorkerParser;
+import Common.TypeAdaptor.ZonedDateTimeTypeAdaptor;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.internal.bind.util.ISO8601Utils;
 import com.google.gson.reflect.TypeToken;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-import org.w3c.dom.ls.LSOutput;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -143,7 +141,7 @@ public class WorkerManager {
 
     public void save() {
         String stringBuilder = gson.toJson(workerList);
-        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("Data.json"))) {
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("Common.Common.Data.json"))) {
             byte[] buffer = stringBuilder.getBytes();
             bos.write(buffer, 0, buffer.length);
         } catch (IOException e) {

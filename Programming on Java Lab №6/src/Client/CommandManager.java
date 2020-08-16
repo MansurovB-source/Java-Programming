@@ -1,7 +1,8 @@
-package Manager;
+package Client;
 
-import Data.Worker;
-import Parser.UserInputParser;
+import Common.Data.Worker;
+import Common.Parser.UserInputParser;
+import Server.WorkerManager;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;

@@ -137,20 +137,20 @@ public class UserInputParser {
         System.out.println("Введите дату окончания в формате YYYY-MM-DDTHH:MM:SS");
         System.out.println("Дата окончания может быть null-ом\n" +
                 " -1 это null");
-        read = in.nextLine();
-        if (read.equals("-1")) {
-            localDateTime = null;
-        } else {
-            while(!check) {
+        while (!check) {
+            read = in.nextLine();
+            if (read.equals("-1")) {
+                localDateTime = null;
+                check = true;
+            } else {
                 Matcher matcher = pattern.matcher(read);
                 if (matcher.matches()) {
-                    localDateTime = LocalDateTime.parse(read,
-                            DateTimeFormatter.ISO_DATE_TIME);
+                    localDateTime = LocalDateTime.parse(read, DateTimeFormatter.ISO_DATE_TIME);
                     check = true;
                 } else System.out.println("Введите корректные данные!");
             }
-            check = false;
         }
+        check = false;
         return localDateTime;
     }
 

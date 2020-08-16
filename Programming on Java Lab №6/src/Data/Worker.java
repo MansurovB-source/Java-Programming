@@ -1,5 +1,6 @@
 package Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
@@ -7,7 +8,8 @@ import java.time.ZonedDateTime;
  * Created by IntelliJ IDEA.
  * Author: Behruz Mansurov
  */
-public class Worker implements Comparable<Worker> {
+public class Worker implements Comparable<Worker>, Serializable {
+    static final long serialVersionUID = 5747945029602321277L;
 
     private static long idCounter = 0;
 

@@ -1,10 +1,13 @@
 package Data;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  * Author: Behruz Mansurov
  */
-public class Coordinates {
+public class Coordinates implements Serializable {
+    static final long serialVersionUID = -4855375093353749788L;
     private int x; //Значение поля должно быть больше -912
     private Long y; //Максимальное значение поля: 139, Поле не может быть null
 

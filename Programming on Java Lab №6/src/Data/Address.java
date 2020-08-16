@@ -1,10 +1,13 @@
 package Data;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  * Author: Behruz Mansurov
  */
-public class Address {
+public class Address implements Serializable {
+    static final long serialVersionUID  = -5437536697562894772L;
     private String street; //Поле может быть null
     private String zipCode; //Поле не может быть null
 

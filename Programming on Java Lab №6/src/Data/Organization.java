@@ -1,10 +1,13 @@
 package Data;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  * Author: Behruz Mansurov
  */
-public class Organization {
+public class Organization implements Serializable {
+    static final long serialVersionUID = 4011298202669741884L;
     private long employeesCount; //Значение поля должно быть больше 0
     private OrganizationType type; //Поле не может быть null
     private Address officialAddress; //Поле может быть null

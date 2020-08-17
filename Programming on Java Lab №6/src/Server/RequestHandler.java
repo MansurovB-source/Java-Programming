@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 /**
@@ -91,9 +90,15 @@ public class RequestHandler {
                     oos.writeUTF(workerManager.countLessThanOrganization(organization));
                     break;
             }
-            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                System.out.println("Не смогли закрыть сокет");
+                e.printStackTrace();
+            }
         }
     }
 

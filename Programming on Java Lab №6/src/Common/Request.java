@@ -51,6 +51,12 @@ public class Request implements Serializable {
         this.file = file;
     }
 
+    public Request(String request, long id,  Worker worker) {
+        this.request = request;
+        this.id = id;
+        this.worker = worker;
+    }
+
     public String getRequest() {
         return request;
     }

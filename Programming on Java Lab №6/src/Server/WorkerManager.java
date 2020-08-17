@@ -19,13 +19,11 @@ import java.util.*;
  * Author: Behruz Mansurov
  */
 public class WorkerManager {
-    private List<Worker> workerList;
-    private LocalDateTime initDate;
-    private File file;
-    private static Gson gson = ZonedDateTimeTypeAdaptor.getGsonBuilder().serializeNulls().create();
+    private final List<Worker> workerList = new LinkedList<>();
+    private final LocalDateTime initDate;
+    private static final Gson gson = ZonedDateTimeTypeAdaptor.getGsonBuilder().serializeNulls().create();
 
     public WorkerManager(String file) {
-        workerList = new LinkedList<>();
         initDate = LocalDateTime.now();
         importData(new File(file));
     }
@@ -49,7 +47,6 @@ public class WorkerManager {
 
     public StringBuilder readFromFile(File file) throws IOException {
         StringBuilder result = new StringBuilder();
-        String nextLine;
         try (Scanner in = new Scanner(new BufferedReader(new InputStreamReader(new FileInputStream(file))))) {
             while (in.hasNextLine()) {
                 result.append(in.nextLine());
@@ -59,8 +56,7 @@ public class WorkerManager {
     }
 
     public void fromJsonToWorker(StringBuilder stringBuilder) {
-        List<Worker> workers = new LinkedList<>();
-//        Gson gson = ZonedDateTimeTypeAdaptor.getGsonBuilder().serializeNulls().create();
+        List<Worker> workers;
         Type collectionType = new TypeToken<List<Worker>>() {
         }.getType();
         try {
@@ -77,7 +73,6 @@ public class WorkerManager {
     }
 
     public String help() {
-        Map<String, String> help = new HashMap<>();
         return "Lab 5 made by Behruz Mansurov\n" +
                 "\"help : вывести справку по доступным командам\"\n" +
                 "\"info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)\"\n" +
@@ -85,7 +80,7 @@ public class WorkerManager {
                 "\"update_by_id : обновить значение элемента коллекции, id которого равен заданному\"\n" +
                 "\"remove_by_id : удалить элемент из коллекции по его id\"\n" +
                 "\"clear : очистить коллекцию\"\n" +
-                "\"save : сохранить коллекцию в файл\"\n" +
+//                "\"save : сохранить коллекцию в файл\"\n" +
                 "\"execute_script file_name : считать и исполнить скрипт из указанного файла. " +
                 "В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.\"\n" +
                 "\"exit : завершить программу (без сохранения в файл)\"\n" +
@@ -113,13 +108,14 @@ public class WorkerManager {
         return "Объект успешно добавлен в коллекцию";
     }
 
-    public String updateById(long id, long updateId) {
+    public String updateById(long id, Worker worker) {
         for (Worker w : workerList) {
             if (w.getId() == id) {
-                w.setId(updateId);
+                workerList.remove(w);
+                workerList.add(worker);
             }
         }
-        return "Если был объект с таким id, id объекта было обновлено";
+        return "Если был объект с таким id, объект был обновлен";
     }
 
     public String removeById(long id) {
@@ -151,7 +147,7 @@ public class WorkerManager {
 
     public String removeFirst() {
         if(workerList.size() != 0) {
-            workerList.remove(1);
+            workerList.remove(0);
             return "Удален первый элемент";
         } else {
             return "Коллекция пуста";
@@ -161,9 +157,7 @@ public class WorkerManager {
 
     public String removeLast() {
         if(workerList.size() != 0) {
-            ListIterator<Worker> listIterator = workerList.listIterator();
-            listIterator.previous();
-            listIterator.remove();
+            workerList.remove(workerList.size() - 1);
             return "Удален последний элемент";
         } else {
             return "Коллекция пуста";
@@ -179,7 +173,7 @@ public class WorkerManager {
 
     public String removeAnyByStartDate(ZonedDateTime date) {
         int l = workerList.size();
-        workerList.removeIf(w -> w.getStartDate().equals(date));
+        workerList.removeIf(w -> w.getStartDate().compareTo(date) == 0);
         if(l == workerList.size()) {
             return "Объект с таким startdate не существует";
         } else return "Объект был удален";

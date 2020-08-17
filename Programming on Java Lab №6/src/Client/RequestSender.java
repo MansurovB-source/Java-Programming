@@ -20,14 +20,10 @@ import java.util.Scanner;
  * @author Behruz Mansurov
  */
 public class RequestSender {
-    public static void main(String[] args) {
-        RequestSender requestSender = new RequestSender(5555);
-        requestSender.parser();
-    }
     private boolean exit = false;
-    private final Client sender;
+    private final Connection sender;
     public RequestSender(int PORT) {
-        sender = new Client(PORT);
+        sender = new Connection(PORT);
     }
 
     public void parser() {
@@ -52,12 +48,10 @@ public class RequestSender {
                         sender.sendRequest(new Request(userCommand[0]));
                         break;
                     case "add":
-                        Worker worker = new Worker(userInputParser.inputName(), userInputParser.inputCoordinates(), userInputParser.inputSalary(), userInputParser.inputStartDate(), userInputParser.inputEndDate(), userInputParser.inputStatus(), userInputParser.inputOrganization());
-                        sender.sendRequest(new Request(userCommand[0], worker));
+                    case "update_by_id":
+                        sender.sendRequest(new Request(userCommand[0], userInputParser.inputId(),
+                                new Worker(userInputParser.inputName(), userInputParser.inputCoordinates(), userInputParser.inputSalary(), userInputParser.inputStartDate(), userInputParser.inputEndDate(), userInputParser.inputStatus(), userInputParser.inputOrganization())));
                         break;
-//                    case "update_by_id":
-//                        workerManager.updateById(userInputParser.inputId(), userInputParser.inputId());
-//                        break;
                     case "remove_by_id":
                         sender.sendRequest(new Request(userCommand[0], userInputParser.inputId()));
                         break;

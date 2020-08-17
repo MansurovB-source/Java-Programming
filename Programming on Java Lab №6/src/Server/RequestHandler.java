@@ -5,7 +5,6 @@ import Common.Data.Worker;
 import Common.Request;
 
 import java.io.*;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.time.ZonedDateTime;
@@ -15,7 +14,7 @@ import java.time.ZonedDateTime;
  *
  * @author Behruz Mansurov
  */
-public class RequestHandler {
+public class RequestHandler implements Runnable{
     private final SocketChannel socket;
     private final WorkerManager workerManager;
     private Request request;
@@ -31,7 +30,7 @@ public class RequestHandler {
         this.workerManager = workerManager;
     }
 
-    public void handler() {
+    public void run() {
         try(ObjectInputStream ois = new ObjectInputStream(socket.socket().getInputStream());
         ByteArrayOutputStream bais = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bais)) {
@@ -60,7 +59,7 @@ public class RequestHandler {
                     oos.writeObject(workerManager.add(worker));
                     break;
                 case "update_by_id":
-                    oos.writeObject(workerManager.updateById(id, id));
+                    oos.writeObject(workerManager.updateById(id, worker));
                     break;
                 case "remove_by_id":
                     oos.writeObject(workerManager.removeById(id));

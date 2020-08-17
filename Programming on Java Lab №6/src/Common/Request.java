@@ -6,6 +6,7 @@ import Common.Data.Worker;
 import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,8 +19,9 @@ public class Request implements Serializable {
     private Worker worker;
     private File file;
     private int id;
-    private LocalDateTime localDateTime;
+    private ZonedDateTime startdate;
     private Organization organization;
+
 
     public Request(String request, Worker worker) {
         this.request = request;
@@ -42,8 +44,8 @@ public class Request implements Serializable {
         return id;
     }
 
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
+    public ZonedDateTime getLocalDateTime() {
+        return startdate;
     }
 
     public Organization getOrganization() {
@@ -55,9 +57,9 @@ public class Request implements Serializable {
         this.organization = organization;
     }
 
-    public Request(String request, LocalDateTime localDateTime) {
+    public Request(String request, ZonedDateTime startdate) {
         this.request = request;
-        this.localDateTime = localDateTime;
+        this.startdate = startdate;
     }
 
     public Request(String request, int id) {

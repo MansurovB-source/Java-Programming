@@ -76,9 +76,9 @@ public class WorkerManager {
         System.out.println("Коллекция успешно загружено. Добавлено " + workerList.size() + " элементов");
     }
 
-    public void help() {
+    public String help() {
         Map<String, String> help = new HashMap<>();
-        System.out.println("Lab 5 made by Behruz Mansurov\n" +
+        return "Lab 5 made by Behruz Mansurov\n" +
                 "\"help : вывести справку по доступным командам\"\n" +
                 "\"info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)\"\n" +
                 "\"add : добавить новый элемент в коллекцию\"\n" +
@@ -94,49 +94,47 @@ public class WorkerManager {
                 "\"shuffle : перемешать элементы коллекции в случайном порядке\"\n" +
                 "\"remove_any_by_start_date : удалить из коллекции один элемент, значение поля startDate которого эквивалентно заданному\"\n" +
                 "\"max_by_id : вывести любой объект из коллекции, значение поля id которого является максимальным\"\n" +
-                "\"count_less_than_organization : вывести количество элементов, значение поля organization которых меньше заданного\""
-        );
+                "\"count_less_than_organization : вывести количество элементов, значение поля organization которых меньше заданного\"";
     }
 
-    public void info() {
-        System.out.println("Информация о коллекции:\n" +
+    public String info() {
+        return "Информация о коллекции:\n" +
                 "   Тип коллекции: " + workerList.getClass().getName() + "\n" +
                 "   Дата инициализации: " + initDate.toString() + "\n" +
-                "   Количество элеменотов: " + workerList.size() + "\n"
-        );
+                "   Количество элеменотов: " + workerList.size() + "\n";
     }
 
-    public void show() {
-        System.out.println(workerList.toString());
+    public String show() {
+        return workerList.toString();
     }
 
-    public void add(Worker worker) {
+    public String  add(Worker worker) {
         workerList.add(worker);
-        System.out.println("Объект успешно добавлен в коллекцию");
+        return "Объект успешно добавлен в коллекцию";
     }
 
-    public void updateById(long id, long updateId) {
+    public String updateById(long id, long updateId) {
         for (Worker w : workerList) {
             if (w.getId() == id) {
                 w.setId(updateId);
             }
         }
-        System.out.println("Если был объект с таким id, id объекта было обновлено");
+        return "Если был объект с таким id, id объекта было обновлено";
     }
 
-    public void removeById(long id) {
+    public String removeById(long id) {
         int l = workerList.size();
         workerList.removeIf(w -> w.getId() == id);
         if(l == workerList.size()) {
-            System.out.println("Не существует оюъект с таким id");
+            return "Не существует объект с таким id";
         } else {
-            System.out.println("Объект успешно удален");
+            return "Объект успешно удален";
         }
     }
 
-    public void clear() {
+    public String clear() {
         workerList.clear();
-        System.out.println("Коллекция удалена");
+        return "Коллекция удалена";
     }
 
     public void save() {
@@ -151,71 +149,53 @@ public class WorkerManager {
         System.out.println("Коллекция сохранена в файл");
     }
 
-    public void removeFirst() {
+    public String removeFirst() {
         if(workerList.size() != 0) {
             workerList.remove(1);
-            System.out.println("Удален первый элемент");
+            return "Удален первый элемент";
         } else {
-            System.out.println("Коллекция пуста");
+            return "Коллекция пуста";
         }
 
     }
 
-    public void removeLast() {
+    public String removeLast() {
         if(workerList.size() != 0) {
             ListIterator<Worker> listIterator = workerList.listIterator();
             listIterator.previous();
             listIterator.remove();
-            System.out.println("Удален последний элемент");
+            return "Удален последний элемент";
         } else {
-            System.out.println("Коллекция пуста");
+            return "Коллекция пуста";
         }
     }
 
-    public void shuffle() {
+    public String shuffle() {
         if(workerList.size() != 0) {
             Collections.shuffle(workerList);
-        } else System.out.println("Коллекция пуста");
+            return "Элементы коллекции были перемешанны в случайном порядке";
+        } else return "Коллекция пуста";
     }
 
-    public void removeAnyByStartDate(ZonedDateTime date) {
+    public String removeAnyByStartDate(ZonedDateTime date) {
         int l = workerList.size();
         workerList.removeIf(w -> w.getStartDate().equals(date));
         if(l == workerList.size()) {
-            System.out.println("Объект с таким startdate не существует");
-        } else System.out.println("Объект был удален");
-    }
-//    public void removeAnyByStartDate(String date) {
-//        ZoneId timeZone = ZoneId.systemDefault();
-//        ZonedDateTime time = null;
-//        try {
-//            time = (LocalDateTime.parse(date,
-//                    DateTimeFormatter.ISO_DATE_TIME).atZone(timeZone));
-//        } catch (Exception e) {
-//            System.out.println("Дата введена неправельно");
-//        }
-//
-//        ZonedDateTime finalTime = time;
-//        workerList.removeIf(w -> w.getCreationDate().equals(finalTime) );
-//    }
-
-    public void maxById() {
-        System.out.println("Max : " + Collections.max(workerList));
+            return "Объект с таким startdate не существует";
+        } else return "Объект был удален";
     }
 
-    public void countLessThanOrganization(Organization organization) {
+    public String maxById() {
+        return "Max : " + Collections.max(workerList);
+    }
+
+    public String countLessThanOrganization(Organization organization) {
         int cnt = 0;
         for (Worker w : workerList) {
             if (w.getOrganization().getEmployeesCount() < organization.getEmployeesCount()) {
                 cnt++;
             }
         }
-        System.out.println("Количество элементов, значение поля organization которых меньше заданного " + cnt);
-        //        Iterator<Worker> iterator = workerList.iterator();
-//        while(iterator.hasNext()) {
-//            if(iterator.next().getOrganization().getEmployeesCount() < organization.getEmployeesCount()) {
-//                System.out.println();
-//            }
-//        }
+        return "Количество элементов, значение поля organization которых меньше заданного: " + cnt;
     }
 }

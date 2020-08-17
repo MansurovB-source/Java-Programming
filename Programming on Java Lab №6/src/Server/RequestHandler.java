@@ -4,11 +4,10 @@ import Common.Data.Organization;
 import Common.Data.Worker;
 import Common.Request;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 import java.time.ZonedDateTime;
 
 /**
@@ -17,24 +16,25 @@ import java.time.ZonedDateTime;
  * @author Behruz Mansurov
  */
 public class RequestHandler {
-    private final Socket socket;
+    private final SocketChannel socket;
     private final WorkerManager workerManager;
     private Request request;
     String command;
     Worker worker;
     File file;
-    int id;
+    long id;
     ZonedDateTime startdate;
     Organization organization;
 
-    public RequestHandler(Socket socket, WorkerManager workerManager) {
+    public RequestHandler(SocketChannel socket, WorkerManager workerManager) {
         this.socket = socket;
         this.workerManager = workerManager;
     }
 
     public void handler() {
-        try(ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream())) {
+        try(ObjectInputStream ois = new ObjectInputStream(socket.socket().getInputStream());
+        ByteArrayOutputStream bais = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bais)) {
             try {
                 request = (Request) ois.readObject();
             } catch (ClassNotFoundException e) {
@@ -48,48 +48,52 @@ public class RequestHandler {
             organization = request.getOrganization();
             switch (command) {
                 case "help":
-                    oos.writeUTF(workerManager.help());
+                    oos.writeObject(workerManager.help());
                     break;
                 case "info":
-                    oos.writeUTF(workerManager.info());
+                    oos.writeObject(workerManager.info());
                     break;
                 case "show":
-                    oos.writeUTF(workerManager.show());
+                    oos.writeObject(workerManager.show());
                     break;
                 case "add":
-                    oos.writeUTF(workerManager.add(worker));
+                    oos.writeObject(workerManager.add(worker));
                     break;
                 case "update_by_id":
-                    oos.writeUTF(workerManager.updateById(id, id));
+                    oos.writeObject(workerManager.updateById(id, id));
                     break;
                 case "remove_by_id":
-                    oos.writeUTF(workerManager.removeById(id));
+                    oos.writeObject(workerManager.removeById(id));
                     break;
                 case "clear":
-                    oos.writeUTF(workerManager.clear());
+                    oos.writeObject(workerManager.clear());
                     break;
                 case "save_server":
                     workerManager.save();
                     break;
                 case "remove_first":
-                    oos.writeUTF(workerManager.removeFirst());
+                    oos.writeObject(workerManager.removeFirst());
                     break;
                 case "remove_last":
-                    oos.writeUTF(workerManager.removeLast());
+                    oos.writeObject(workerManager.removeLast());
                     break;
                 case "shuffle":
-                    oos.writeUTF(workerManager.shuffle());
+                    oos.writeObject(workerManager.shuffle());
                     break;
                 case "remove_any_by_start_date":
-                    oos.writeUTF(workerManager.removeAnyByStartDate(startdate));
+                    oos.writeObject(workerManager.removeAnyByStartDate(startdate));
                     break;
                 case "max_by_id":
-                    oos.writeUTF(workerManager.maxById());
+                    oos.writeObject(workerManager.maxById());
                     break;
                 case "count_less_than_organization":
-                    oos.writeUTF(workerManager.countLessThanOrganization(organization));
+                    oos.writeObject(workerManager.countLessThanOrganization(organization));
                     break;
             }
+            ByteBuffer byteBuffer = ByteBuffer.allocate(bais.size());
+            byteBuffer.put(bais.toByteArray());
+            byteBuffer.flip();
+            socket.write(byteBuffer);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

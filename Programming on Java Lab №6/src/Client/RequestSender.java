@@ -20,6 +20,10 @@ import java.util.Scanner;
  * @author Behruz Mansurov
  */
 public class RequestSender {
+    public static void main(String[] args) {
+        RequestSender requestSender = new RequestSender(5555);
+        requestSender.parser();
+    }
     private boolean exit = false;
     private final Client sender;
     public RequestSender(int PORT) {

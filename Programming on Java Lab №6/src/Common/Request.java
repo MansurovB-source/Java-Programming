@@ -18,14 +18,37 @@ public class Request implements Serializable {
     private String request;
     private Worker worker;
     private File file;
-    private int id;
+    private long id;
     private ZonedDateTime startdate;
     private Organization organization;
 
+    public Request(String request) {
+        this.request = request;
+    }
 
     public Request(String request, Worker worker) {
         this.request = request;
         this.worker = worker;
+    }
+
+    public Request(String request, Organization organization) {
+        this.request = request;
+        this.organization = organization;
+    }
+
+    public Request(String request, ZonedDateTime startdate) {
+        this.request = request;
+        this.startdate = startdate;
+    }
+
+    public Request(String request, long id) {
+        this.request = request;
+        this.id = id;
+    }
+
+    public Request(String request, File file) {
+        this.request = request;
+        this.file = file;
     }
 
     public String getRequest() {
@@ -40,7 +63,7 @@ public class Request implements Serializable {
         return file;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -52,23 +75,4 @@ public class Request implements Serializable {
         return organization;
     }
 
-    public Request(String request, Organization organization) {
-        this.request = request;
-        this.organization = organization;
-    }
-
-    public Request(String request, ZonedDateTime startdate) {
-        this.request = request;
-        this.startdate = startdate;
-    }
-
-    public Request(String request, int id) {
-        this.request = request;
-        this.id = id;
-    }
-
-    public Request(String request, File file) {
-        this.request = request;
-        this.file = file;
-    }
 }

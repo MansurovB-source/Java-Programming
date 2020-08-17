@@ -21,6 +21,10 @@ public class Client {
     ByteBuffer byteBuffer = ByteBuffer.allocate(10240);
     byte[] bytes;
 
+    public Client(int PORT) {
+        this.PORT = PORT;
+    }
+
     public void sendRequest(Request request) {
         try {
             ByteArrayOutputStream baos;
@@ -40,10 +44,16 @@ public class Client {
                     for (int i = 0; i < read; i++) {
                         bytes[i] = byteBuffer.get(i);
                     }
-                    System.out.println(bytes.toString());
+                    ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+                    ObjectInputStream ois = new ObjectInputStream(bais);
+                    System.out.println((String) ois.readObject());
                 }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             } finally {
-                oos.close();
+                if (oos != null) {
+                    oos.close();
+                }
             }
         }catch (ConnectionException e) {
             System.out.println("Ошибка подключения к серверу");
@@ -53,7 +63,7 @@ public class Client {
         }
     }
 
-    public SocketChannel connect(InetSocketAddress inetSocketAddress) throws ConnectionException {
+    private SocketChannel connect(InetSocketAddress inetSocketAddress) throws ConnectionException {
         int countReconnect = 0;
         SocketChannel socketChannel;
         try {

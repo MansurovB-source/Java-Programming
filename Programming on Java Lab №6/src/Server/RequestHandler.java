@@ -28,6 +28,7 @@ public class RequestHandler implements Runnable{
     public RequestHandler(SocketChannel socket, WorkerManager workerManager) {
         this.socket = socket;
         this.workerManager = workerManager;
+
     }
 
     public void run() {
@@ -68,7 +69,9 @@ public class RequestHandler implements Runnable{
                     oos.writeObject(workerManager.clear());
                     break;
                 case "save_server":
+                case "exit":
                     workerManager.save();
+                    oos.writeObject("Коллекция сохранена в файл на сервере");
                     break;
                 case "remove_first":
                     oos.writeObject(workerManager.removeFirst());

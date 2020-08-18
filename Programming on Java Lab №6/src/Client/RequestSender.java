@@ -56,6 +56,7 @@ public class RequestSender {
                         sender.sendRequest(new Request(userCommand[0], userInputParser.inputId()));
                         break;
                     case "exit":
+                        sender.sendRequest(new Request(userCommand[0]));
                         exit = true;
                         break;
                     case "remove_any_by_start_date":

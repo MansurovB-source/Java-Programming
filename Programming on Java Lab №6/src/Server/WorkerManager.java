@@ -135,7 +135,7 @@ public class WorkerManager {
 
     public void save() {
         String stringBuilder = gson.toJson(workerList);
-        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("Common.Common.Data.json"))) {
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("Data.json"))) {
             byte[] buffer = stringBuilder.getBytes();
             bos.write(buffer, 0, buffer.length);
         } catch (IOException e) {

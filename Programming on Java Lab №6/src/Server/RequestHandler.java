@@ -95,7 +95,9 @@ public class RequestHandler implements Runnable{
             ByteBuffer byteBuffer = ByteBuffer.allocate(bais.size());
             byteBuffer.put(bais.toByteArray());
             byteBuffer.flip();
-            socket.write(byteBuffer);
+            while(byteBuffer.hasRemaining()) {
+                socket.write(byteBuffer);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

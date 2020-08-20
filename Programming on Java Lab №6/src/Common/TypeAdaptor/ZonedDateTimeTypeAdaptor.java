@@ -25,7 +25,7 @@ public class ZonedDateTimeTypeAdaptor implements JsonSerializer<ZonedDateTime>, 
 
     @Override
     public JsonElement serialize(ZonedDateTime zonedDateTime, Type type, JsonSerializationContext jsonSerializationContext) {
-        return new JsonPrimitive(zonedDateTime.format(DateTimeFormatter.ISO_DATE_TIME));
+        return new JsonPrimitive(zonedDateTime.format(DateTimeFormatter.ISO_ZONED_DATE_TIME));
     }
 
     public static GsonBuilder getGsonBuilder() {

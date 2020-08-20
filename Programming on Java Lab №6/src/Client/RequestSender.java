@@ -6,10 +6,7 @@ import Common.Parser.UserInputParser;
 import Common.Request;
 import Server.Server;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.util.Scanner;
@@ -35,6 +32,9 @@ public class RequestSender {
             System.out.println("Введите команду:");
             command = scanner.nextLine();
             userCommand = command.trim().split(" ", 2);
+            if (userCommand[0].equals("execute_script")) {
+                userCommand[0] = String.valueOf(executeScript(userCommand[1]));
+            }
             try {
                 switch (userCommand[0]) {
                     case "help":
@@ -73,5 +73,17 @@ public class RequestSender {
                 System.out.println("Отсутствует аргумент");
             }
         }
+    }
+
+    public StringBuilder executeScript(String file) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try (Scanner in = new Scanner(new BufferedInputStream(new FileInputStream(file)))) {
+            while (in.hasNextLine()) {
+                stringBuilder.append(in.nextLine());
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Файл не найден");
+        }
+        return stringBuilder;
     }
 }

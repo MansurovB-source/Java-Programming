@@ -173,6 +173,8 @@ public class WorkerManager {
 
     public String removeAnyByStartDate(ZonedDateTime date) {
         int l = workerList.size();
+        System.out.println(date);
+        System.out.println(workerList.get(0).getStartDate());
         workerList.removeIf(w -> w.getStartDate().compareTo(date) == 0);
         if(l == workerList.size()) {
             return "Объект с таким startdate не существует";
@@ -184,12 +186,7 @@ public class WorkerManager {
     }
 
     public String countLessThanOrganization(Organization organization) {
-        int cnt = 0;
-        for (Worker w : workerList) {
-            if (w.getOrganization().getEmployeesCount() < organization.getEmployeesCount()) {
-                cnt++;
-            }
-        }
+        int cnt = (int) workerList.stream().filter(w -> w.getOrganization().getEmployeesCount() < organization.getEmployeesCount()).count();
         return "Количество элементов, значение поля organization которых меньше заданного: " + cnt;
     }
 }

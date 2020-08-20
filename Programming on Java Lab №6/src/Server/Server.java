@@ -31,14 +31,18 @@ public class Server {
             System.out.println(e.getMessage());
         }
         try (ServerSocketChannel serverSocket = ServerSocketChannel.open()) {
-            serverSocket.bind(new InetSocketAddress(PORT));
+            serverSocket.socket().bind(new InetSocketAddress(PORT));
+            serverSocket.configureBlocking(false);
             System.out.println("Сервер запущен");
+            System.out.println("Сервер ожидает клиентов(port = " + PORT + ")");
             while (true) {
-                System.out.println("Сервер ожидает клиентов(port = " + PORT + ")");
                 SocketChannel client = serverSocket.accept();
-                System.out.println("Подключён клиент:" + "" +
-                        "\n\taddr = " + client.getLocalAddress() + ".");
-                new Thread(new RequestHandler(client, workerManager)).start();
+                if (client != null) {
+                    System.out.println("Подключён клиент:" + "" +
+                            "\n\taddr = " + client.getRemoteAddress() + ".");
+                    new Thread(new RequestHandler(client, workerManager)).start();
+                    System.out.println("Сервер ожидает клиентов(port = " + PORT + ")");
+                }
             }
         } catch (IOException e) {
             System.out.println("Не смогли подключится данному порту");

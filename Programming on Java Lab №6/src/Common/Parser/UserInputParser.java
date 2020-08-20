@@ -261,7 +261,7 @@ public class UserInputParser {
             if (in.hasNextLine()) {
                 read = in.nextLine();
                 if (read.equals(OrganizationType.COMMERCIAL.toString()) || read.equals(OrganizationType.PRIVATE_LIMITED_COMPANY.toString())
-                        || read.equals(OrganizationType.PRIVATE_LIMITED_COMPANY.toString())
+                        || read.equals(OrganizationType.OPEN_JOINT_STOCK_COMPANY.toString())
                         || read.equals(OrganizationType.TRUST.toString())) {
                     check = true;
                 } else

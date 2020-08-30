@@ -21,29 +21,47 @@ public class Request implements Serializable {
     private long id;
     private ZonedDateTime startdate;
     private Organization organization;
+    String login;
+    String password;
+    User user;
+
+    public Request(String request, String login) {
+        this.request = request;
+        this.login = login;
+    }
 
     public Request(String request) {
         this.request = request;
     }
 
-    public Request(String request, Worker worker) {
+    public Request(String request, Worker worker, User user) {
         this.request = request;
         this.worker = worker;
+        this.user = user;
     }
 
-    public Request(String request, Organization organization) {
+    public Request(String request, Organization organization, User user) {
         this.request = request;
         this.organization = organization;
+        this.user = user;
     }
 
-    public Request(String request, ZonedDateTime startdate) {
+    public Request(String request, String login, String password) {
+        this.request = request;
+        this.login = login;
+        this.password = password;
+    }
+
+    public Request(String request, ZonedDateTime startdate, User user) {
         this.request = request;
         this.startdate = startdate;
+        this.user = user;
     }
 
-    public Request(String request, long id) {
+    public Request(String request, long id, User user) {
         this.request = request;
         this.id = id;
+        this.user = user;
     }
 
     public Request(String request, File file) {
@@ -51,10 +69,11 @@ public class Request implements Serializable {
         this.file = file;
     }
 
-    public Request(String request, long id,  Worker worker) {
+    public Request(String request, long id, Worker worker, User user) {
         this.request = request;
         this.id = id;
         this.worker = worker;
+        this.user = user;
     }
 
     public String getRequest() {
@@ -81,4 +100,11 @@ public class Request implements Serializable {
         return organization;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }

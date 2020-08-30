@@ -2,6 +2,7 @@ package Client;
 
 import Client.Exception.ConnectionException;
 import Common.Request;
+import Common.User;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -20,12 +21,17 @@ public class Connection {
     private final int PORT;
     ByteBuffer byteBuffer = ByteBuffer.allocate(10240);
     byte[] bytes;
+    User user = null;
+
+    public User getUser() {
+        return user;
+    }
 
     public Connection(int PORT) {
         this.PORT = PORT;
     }
 
-    public void sendRequest(Request request) {
+    public Object sendRequest(Request request) {
         try {
             ByteArrayOutputStream baos;
             ObjectOutputStream oos = null;
@@ -45,8 +51,12 @@ public class Connection {
                     }
                     ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
                     ObjectInputStream ois = new ObjectInputStream(bais);
-                    System.out.println((String) ois.readObject());
-                    byteBuffer.clear();
+                    if(request.equals("is_registred") || request.equals("sign_in") || request.equals("sign_up")) {
+                        user = (User) ois.readObject();
+                    } else {
+                        System.out.println((String) ois.readObject());
+                        byteBuffer.clear();
+                    }
                 }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

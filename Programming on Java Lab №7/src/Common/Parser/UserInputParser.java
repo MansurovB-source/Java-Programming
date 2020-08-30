@@ -12,7 +12,8 @@ import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
- * Author: Behruz Mansurov
+ *
+ * @author Behruz Mansurov
  */
 public class UserInputParser {
     private Scanner in = new Scanner(System.in);
@@ -362,6 +363,5 @@ public class UserInputParser {
         check = false;
         return read;
     }
-
 
 }

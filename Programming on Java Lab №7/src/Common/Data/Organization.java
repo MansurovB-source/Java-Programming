@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
- * Author: Behruz Mansurov
+ *
+ * @author Behruz Mansurov
  */
 public class Organization implements Serializable {
     static final long serialVersionUID = 4011298202669741884L;

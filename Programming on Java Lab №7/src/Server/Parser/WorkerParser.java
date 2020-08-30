@@ -4,7 +4,8 @@ import Common.Data.Worker;
 
 /**
  * Created by IntelliJ IDEA.
- * Author: Behruz Mansurov
+ *
+ * @author Behruz Mansurov
  */
 public class WorkerParser {
     public static boolean parse(Worker worker) {

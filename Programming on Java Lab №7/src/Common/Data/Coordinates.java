@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
- * Author: Behruz Mansurov
+ *
+ * @author Behruz Mansurov
  */
 public class Coordinates implements Serializable {
     static final long serialVersionUID = -4855375093353749788L;

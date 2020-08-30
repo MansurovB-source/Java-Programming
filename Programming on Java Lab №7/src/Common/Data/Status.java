@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
- * Author: Behruz Mansurov
+ *
+ * @author Behruz Mansurov
  */
 public enum Status implements Serializable {
     FIRED,

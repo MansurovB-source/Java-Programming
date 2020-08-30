@@ -16,7 +16,8 @@ import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
- * Author: Behruz Mansurov
+ *
+ * @author Behruz Mansurov
  */
 public class WorkerManager {
     private final List<Worker> workerList = new LinkedList<>();

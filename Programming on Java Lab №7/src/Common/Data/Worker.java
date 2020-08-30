@@ -6,7 +6,8 @@ import java.time.ZonedDateTime;
 
 /**
  * Created by IntelliJ IDEA.
- * Author: Behruz Mansurov
+ *
+ * @author Behruz Mansurov
  */
 public class Worker implements Comparable<Worker>, Serializable {
     static final long serialVersionUID = 5747945029602321277L;

@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
- * Author: Behruz Mansurov
+ *
+ * @author Behruz Mansurov
  */
 public class Address implements Serializable {
     static final long serialVersionUID  = -5437536697562894772L;

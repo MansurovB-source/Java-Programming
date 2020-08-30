@@ -31,7 +31,7 @@ public class Connection {
         this.PORT = PORT;
     }
 
-    public Object sendRequest(Request request) {
+    public void sendRequest(Request request) {
         try {
             ByteArrayOutputStream baos;
             ObjectOutputStream oos = null;

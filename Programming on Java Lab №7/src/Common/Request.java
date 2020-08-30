@@ -30,8 +30,9 @@ public class Request implements Serializable {
         this.login = login;
     }
 
-    public Request(String request) {
+    public Request(String request, User user) {
         this.request = request;
+        this.user = user;
     }
 
     public Request(String request, Worker worker, User user) {

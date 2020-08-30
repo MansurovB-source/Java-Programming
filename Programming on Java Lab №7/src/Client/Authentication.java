@@ -49,6 +49,8 @@ public class Authentication {
                         }
                     }
                 }
+            } else {
+                System.out.println("Вы ввели e-mail в неверном формате. Попробуйте снова:");
             }
         }
         sing_in();
@@ -68,4 +70,7 @@ public class Authentication {
         }
     }
 
+    public User getCurrentUser() {
+        return currentUser;
+    }
 }

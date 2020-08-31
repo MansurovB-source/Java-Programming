@@ -3,6 +3,7 @@ package Server;
 import Common.Data.Organization;
 import Common.Data.Worker;
 import Common.Request;
+import Common.User;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -17,18 +18,22 @@ import java.time.ZonedDateTime;
 public class RequestHandler implements Runnable{
     private final SocketChannel socket;
     private final WorkerManager workerManager;
+    private final UserManager userManager;
     private Request request;
-    String command;
-    Worker worker;
-    File file;
-    long id;
-    ZonedDateTime startdate;
-    Organization organization;
+    private String command;
+    private Worker worker;
+    private File file;
+    private long id;
+    private ZonedDateTime startdate;
+    private Organization organization;
+    private String login;
+    private String password;
+    private User user;
 
-    public RequestHandler(SocketChannel socket, WorkerManager workerManager) {
+    public RequestHandler(SocketChannel socket, WorkerManager workerManager, UserManager userManager) {
         this.socket = socket;
         this.workerManager = workerManager;
-
+        this.userManager = userManager;
     }
 
     public void run() {
@@ -46,6 +51,10 @@ public class RequestHandler implements Runnable{
             id = request.getId();
             startdate = request.getLocalDateTime();
             organization = request.getOrganization();
+            login = request.getLogin();
+            password = request.getPassword();
+            user = request.getUser();
+
             switch (command) {
                 case "help":
                     oos.writeObject(workerManager.help());
@@ -91,6 +100,12 @@ public class RequestHandler implements Runnable{
                 case "count_less_than_organization":
                     oos.writeObject(workerManager.countLessThanOrganization(organization));
                     break;
+                case "is_registered":
+                    oos.writeObject(userManager.isRegistered(login));
+                case "sign_up":
+                    oos.writeObject(userManager.singUp(login, password));
+                case "sign_in":
+                    oos.writeObject(userManager.signIn(login,password));
             }
             ByteBuffer byteBuffer = ByteBuffer.allocate(bais.size());
             byteBuffer.put(bais.toByteArray());

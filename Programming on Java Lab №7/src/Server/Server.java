@@ -16,7 +16,13 @@ import java.util.Scanner;
  */
 public class Server {
     public static void main(String[] args) {
+        final String URL = "jdbc:postgresql://localhost:5432/postgres";
+        final String LOGIN = "postgres";
+        final String PASSWORD = "postgresql4800";
+
         WorkerManager workerManager = null;
+        DataBaseManager dataBaseManager = null;
+
         int PORT = 555;
         try {
             if (args.length == 0 || args.length == 1) {

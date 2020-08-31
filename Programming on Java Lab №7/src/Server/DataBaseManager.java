@@ -25,7 +25,7 @@ public class DataBaseManager {
         this.PASSWORD = PASSWORD;
     }
 
-    CopyOnWriteArrayList<Worker> getCollectionsFromDB() {
+    public CopyOnWriteArrayList<Worker> getCollectionsFromDB() {
         String query = "SELECT w.id, w.name, c.x, c.y, w.salary, w.creationdate, w.startdate, w.enddate," +
                 "w.status, o.employeecount, o.organizationtype, a.street, a.zipcode" +
                 "   FROM workers AS w JOIN coordinates AS c ON w.id = c.w_id" +
@@ -60,7 +60,7 @@ public class DataBaseManager {
         }
     }
 
-    boolean addWorker(Worker worker, User user) {
+    public boolean addWorker(Worker worker, User user) {
         String query = "SELECT id FROM users WHERE login = ? and password = ?";
         String query1 = "" +
                 "WITH" +
@@ -114,7 +114,7 @@ public class DataBaseManager {
         }
     }
 
-    int removeWorker(Worker worker, User user) {
+    public int removeWorker(Worker worker, User user) {
         try(Connection connection = DriverManager.getConnection(URL, LOGIN, PASSWORD);
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT login, password FROM users " +
                 "WHERE id = (SELECT user_id FROM workers WHERE users.id = ?)")) {
@@ -143,7 +143,7 @@ public class DataBaseManager {
         }
     }
 
-    int updateWorker(Worker worker, User user) {
+    public int updateWorker(Worker worker, User user) {
         try(Connection connection = DriverManager.getConnection(URL, LOGIN, PASSWORD);
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT login, password FROM users " +
                     "WHERE id = (SELECT user_id FROM workers WHERE users.id = ?)")) {
@@ -172,7 +172,7 @@ public class DataBaseManager {
         }
     }
 
-    boolean checkLoginAndPAssword(User user) {
+    public boolean checkLoginAndPassword(User user) {
         try(Connection connection = DriverManager.getConnection(URL, LOGIN, PASSWORD);
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT login, password FROM users " +
                 "WHERE login = ? and password = ?")) {
@@ -185,7 +185,7 @@ public class DataBaseManager {
         }
     }
 
-    User isRegitered(String login) {
+    public User isRegitered(String login) {
         try(Connection connection = DriverManager.getConnection(URL, LOGIN, PASSWORD);
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT  login FROM users WHERE login = ?")) {
             preparedStatement.setString(1, login);
@@ -202,7 +202,7 @@ public class DataBaseManager {
         }
     }
 
-    User singIn(String login, String password) {
+    public User singIn(String login, String password) {
         try(Connection connection = DriverManager.getConnection(URL, LOGIN, PASSWORD);
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT  login, password FROM users " +
                     "WHERE login = ? and password = ?")) {
@@ -221,7 +221,7 @@ public class DataBaseManager {
         }
     }
 
-    boolean singUp(User user) {
+    public boolean singUp(User user) {
         try(Connection connection = DriverManager.getConnection(URL, LOGIN, PASSWORD);
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (login, password) VALUES (?, ?)")) {
             preparedStatement.setString(1, user.getLogin());

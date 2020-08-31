@@ -29,12 +29,12 @@ public class UserManager {
     }
 
     User isRegistered(String login) {
-        return dataBaseManager.isRegistered(login);
+        return dataBaseManager.isRegitered(login);
     }
 
     User signIn(String login, String password) {
         String pass = hashPassword(password);
-        return dataBaseManager.signIn(login, pass);
+        return dataBaseManager.singIn(login, pass);
     }
 
     User singUp(String login, String password) {
@@ -45,7 +45,7 @@ public class UserManager {
         if (sendMessage(login, pass)) {
             String hashPassword = hashPassword(pass);
             User user = new User(login, hashPassword);
-            if (dataBaseManager.signIn(user)) {
+            if (dataBaseManager.singUp(user)) {
                 return user;
             }
         }

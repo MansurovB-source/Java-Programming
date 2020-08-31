@@ -51,7 +51,7 @@ public class Connection {
                     }
                     ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
                     ObjectInputStream ois = new ObjectInputStream(bais);
-                    if(request.equals("is_registred") || request.equals("sign_in") || request.equals("sign_up")) {
+                    if(request.equals("is_registered") || request.equals("sign_in") || request.equals("sign_up")) {
                         user = (User) ois.readObject();
                     } else {
                         System.out.println((String) ois.readObject());

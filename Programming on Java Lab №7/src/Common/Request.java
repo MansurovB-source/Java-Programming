@@ -105,6 +105,10 @@ public class Request implements Serializable {
         return login;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public User getUser() {
         return user;
     }

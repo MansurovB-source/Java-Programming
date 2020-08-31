@@ -26,7 +26,7 @@ public class Authentication {
         while (true) {
             login = in.nextLine();
             if (login.matches("^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")) {
-                connection.sendRequest(new Request("is_registred", login));
+                connection.sendRequest(new Request("is_registered", login));
                 currentUser = connection.getUser();
                 if (currentUser != null) {
                     System.out.println("Введите пароль:");
@@ -38,14 +38,27 @@ public class Authentication {
                         command = in.nextLine().toLowerCase();
                     } while (!(command.equals("y") || command.equals("n")));
                     if (command.equals("y")) {
-                        System.out.println("Генерируем пароль...");
-                        connection.sendRequest(new Request("sign_up", login));
-                        currentUser = connection.getUser();
-                        if (currentUser.getPassword() != null) {
-                            System.out.println("Введите пароль, который был отправлен на ваш e-mail:");
-                            break;
+                        System.out.println("Хотите автоматически генерированный пароль?");
+                        do {
+                            System.out.println("Введите Y/N");
+                            command = in.nextLine().toLowerCase();
+                        } while (!(command.equals("y") || command.equals("n")));
+                        if (command.equals("y")) {
+                            System.out.println("Генерируем пароль...");
+                            password = null;
                         } else {
-                            System.out.println("Не удалось отправить письмо на " + login + "\nВведите другой e-mail:");
+                            System.out.println("Введите пароль: ");
+                            password = in.nextLine();
+                        }
+                        connection.sendRequest(new Request("sign_up", login, password));
+                        if (command.equals("n")) {
+                            currentUser = connection.getUser();
+                            if (currentUser.getPassword() != null) {
+                                System.out.println("Введите пароль, который был отправлен на ваш e-mail:");
+                                break;
+                            } else {
+                                System.out.println("Не удалось отправить письмо на " + login + "\nВведите другой e-mail:");
+                            }
                         }
                     }
                 }

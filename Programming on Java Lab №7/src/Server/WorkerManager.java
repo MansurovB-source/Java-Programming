@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,10 +24,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Behruz Mansurov
  */
 public class WorkerManager {
-    private final CopyOnWriteArrayList<Worker> workerList = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<Worker> workerList = new CopyOnWriteArrayList<>();
     private final LocalDateTime initDate;
     private static final Gson gson = ZonedDateTimeTypeAdaptor.getGsonBuilder().serializeNulls().create();
     DataBaseManager dataBaseManager;
+    private Lock lock = new ReentrantLock();
+
     public WorkerManager(String file) {
         initDate = LocalDateTime.now();
         importData(new File(file));
@@ -34,6 +38,7 @@ public class WorkerManager {
     public WorkerManager(DataBaseManager dataBaseManager) {
         this.dataBaseManager = dataBaseManager;
         initDate = LocalDateTime.now();
+        workerList = dataBaseManager.getCollectionsFromDB();
     }
 
     public void importData(File file) {
@@ -99,6 +104,8 @@ public class WorkerManager {
                     "\"remove_any_by_start_date : удалить из коллекции один элемент, значение поля startDate которого эквивалентно заданному\"\n" +
                     "\"max_by_id : вывести любой объект из коллекции, значение поля id которого является максимальным\"\n" +
                     "\"count_less_than_organization : вывести количество элементов, значение поля organization которых меньше заданного\"";
+        } else {
+            return "У вас нет доступа";
         }
     }
 
@@ -109,7 +116,7 @@ public class WorkerManager {
                     "   Дата инициализации: " + initDate.toString() + "\n" +
                     "   Количество элеменотов: " + workerList.size() + "\n";
         } else {
-            return "";
+            return "У вас нет доступа";
         }
     }
 
@@ -117,56 +124,71 @@ public class WorkerManager {
         if(dataBaseManager.checkLoginAndPassword(user)) {
             return workerList.toString();
         } else {
-            return "";
+            return "У вас нет доступа";
         }
     }
 
     public String  add(Worker worker, User user) {
-        if(dataBaseManager.addWorker(worker, user)) {
-            workerList.add(worker);
-            return "Объект успешно добавлен в коллекцию";
-        } else {
-            return "Объект с таким ID: " + worker.getId() + " уже существует";
+        lock.lock();
+        try {
+            if (dataBaseManager.addWorker(worker, user)) {
+                workerList.add(worker);
+                return "Объект успешно добавлен в коллекцию";
+            } else {
+                return "Объект с таким ID: " + worker.getId() + " уже существует";
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
     public String updateById(long id, Worker worker, User user) {
-        int status;
-        for (Worker w : workerList) {
-            if (w.getId() == id) {
-                if((status = dataBaseManager.removeWorker(w, user)) > 0) {
-                    workerList.remove(w);
-                    if(dataBaseManager.addWorker(worker, user)) {
-                        workerList.add(worker);
+        lock.lock();
+        try {
+            int status;
+            for (Worker w : workerList) {
+                if (w.getId() == id) {
+                    if ((status = dataBaseManager.removeWorker(w, user)) > 0) {
+                        workerList.remove(w);
+                        if (dataBaseManager.addWorker(worker, user)) {
+                            workerList.add(worker);
+                        }
+                    } else if (status == 0) {
+                        return "База данных не содержит объект с ID: " + id;
+                    } else {
+                        return "Объект с ID " + id + " вам не принадлежит";
                     }
-                } else if (status == 0) {
-                    return "База данных не содержит объект с ID: " + id;
                 } else {
-                    return "Объект с ID " + id + " вам не принадлежит";
+                    return "База данных не содержит объект с ID: " + id;
                 }
-            } else {
-                return "База данных не содержит объект с ID: " + id;
             }
+            return "База данных не содержит объект с ID: " + id;
+        } finally {
+            lock.unlock();
         }
-        return "База данных не содержит объект с ID: " + id;
     }
 
     public String removeById(long id, User user) {
-        int status;
-        for (Worker w : workerList) {
-            if(w.getId() == id) {
-                status = dataBaseManager.removeWorker(w, user);
-                if(status > 0) {
-                    workerList.remove(w);
-                    return "Объект с ID " + w.getId() + " удалён из коллекции";
-                } else if (status == 0) {
-                    return "База данных не содержит объект с ID: " + id;
-                } else {
-                    return "Объект с ID " + id + " вам не принадлежит";
+        lock.lock();
+        try {
+            int status;
+            for (Worker w : workerList) {
+                if (w.getId() == id) {
+                    status = dataBaseManager.removeWorker(w, user);
+                    if (status > 0) {
+                        workerList.remove(w);
+                        return "Объект с ID " + w.getId() + " удалён из коллекции";
+                    } else if (status == 0) {
+                        return "База данных не содержит объект с ID: " + id;
+                    } else {
+                        return "Объект с ID " + id + " вам не принадлежит";
+                    }
                 }
             }
+            return "База данных не содержит объект с ID: " + id;
+        } finally {
+            lock.unlock();
         }
-        return "База данных не содержит объект с ID: " + id;
     }
 
     public String clear() {
@@ -186,48 +208,98 @@ public class WorkerManager {
         System.out.println("Коллекция сохранена в файл");
     }
 
-    public String removeFirst() {
-        if(workerList.size() != 0) {
-            workerList.remove(0);
-            return "Удален первый элемент";
-        } else {
-            return "Коллекция пуста";
-        }
-
-    }
-
-    public String removeLast() {
-        if(workerList.size() != 0) {
-            workerList.remove(workerList.size() - 1);
-            return "Удален последний элемент";
-        } else {
-            return "Коллекция пуста";
+    public String removeFirst(User user) {
+        lock.lock();
+        try {
+            int status = dataBaseManager.removeWorker(workerList.get(0), user);
+            if (status > 0) {
+                workerList.remove(0);
+                return "Объект удалён из коллекции и из базы данных";
+            } else if (status == 0) {
+                return "База данных не содержит такой объект ";
+            } else {
+                return "Объект вам не принадлежит";
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
-    public String shuffle() {
-        if(workerList.size() != 0) {
-            Collections.shuffle(workerList);
-            return "Элементы коллекции были перемешанны в случайном порядке";
-        } else return "Коллекция пуста";
+    public String removeLast(User user) {
+        lock.lock();
+        try {
+            int status = dataBaseManager.removeWorker(workerList.get(workerList.size() - 1), user);
+            if (status > 0) {
+                workerList.remove(workerList.size() - 1);
+                return "Объект удалён из коллекции и из базы данных";
+            } else if (status == 0) {
+                return "База данных не содержит такой объект ";
+            } else {
+                return "Объект вам не принадлежит";
+            }
+        } finally {
+            lock.unlock();
+        }
     }
 
-    public String removeAnyByStartDate(ZonedDateTime date) {
-        int l = workerList.size();
-        System.out.println(date);
-        System.out.println(workerList.get(0).getStartDate());
-        workerList.removeIf(w -> w.getStartDate().compareTo(date) == 0);
-        if(l == workerList.size()) {
-            return "Объект с таким startdate не существует";
-        } else return "Объект был удален";
+    public String shuffle(User user) {
+        lock.lock();
+        try {
+            if (dataBaseManager.checkLoginAndPassword(user)) {
+                if (workerList.size() != 0) {
+                    Collections.shuffle(workerList);
+                    return "Элементы коллекции были перемешанны в случайном порядке";
+                } else return "Коллекция пуста";
+            } else {
+                return "У вас нет доступа";
+            }
+        } finally {
+            lock.unlock();
+        }
     }
 
-    public String maxById() {
-        return "Max : " + Collections.max(workerList);
+    public String removeAnyByStartDate(ZonedDateTime date, User user) {
+        lock.lock();
+        try {
+            for (Worker w : workerList) {
+                if (w.getStartDate().compareTo(date) == 0) {
+                    int status = dataBaseManager.removeWorker(w, user);
+                    if (status > 0) {
+                        workerList.remove(workerList.size() - 1);
+                        workerList.remove(w);
+                        return "Объект удалён из коллекции и из базы данных";
+                    } else if (status == 0) {
+                        return "База данных не содержит такой объект ";
+                    } else {
+                        return "Объект вам не принадлежит";
+                    }
+                }
+            }
+            return "База данных не содержит такой объект ";
+        }finally {
+            lock.unlock();
+        }
     }
 
-    public String countLessThanOrganization(Organization organization) {
-        int cnt = (int) workerList.stream().filter(w -> w.getOrganization().getEmployeesCount() < organization.getEmployeesCount()).count();
-        return "Количество элементов, значение поля organization которых меньше заданного: " + cnt;
+    public String maxById(User user) {
+        if(dataBaseManager.checkLoginAndPassword(user)) {
+            return "Max : " + Collections.max(workerList);
+        } else {
+            return "У вас нет доступа";
+        }
+    }
+
+    public String countLessThanOrganization(Organization organization, User user) {
+        lock.lock();
+        try {
+            if (dataBaseManager.checkLoginAndPassword(user)) {
+                int cnt = (int) workerList.stream().filter(w -> w.getOrganization().getEmployeesCount() < organization.getEmployeesCount()).count();
+                return "Количество элементов, значение поля organization которых меньше заданного: " + cnt;
+            } else {
+                return "У вас нет доступа";
+            }
+        } finally {
+            lock.unlock();
+        }
     }
 }

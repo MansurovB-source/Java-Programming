@@ -48,6 +48,14 @@ public class RequestSender {
                         sender.sendRequest(new Request(userCommand[0], authentication.getCurrentUser()));
                         break;
                     case "add":
+                        long id = userInputParser.inputId();
+                        Worker worker = new Worker(userInputParser.inputName(), userInputParser.inputCoordinates(),
+                                userInputParser.inputSalary(), userInputParser.inputStartDate(),
+                                userInputParser.inputEndDate(), userInputParser.inputStatus(),
+                                userInputParser.inputOrganization());
+                        worker.setId(id);
+                        sender.sendRequest(new Request(userCommand[0], worker, authentication.getCurrentUser()));
+                        break;
                     case "update_by_id":
                         sender.sendRequest(new Request(userCommand[0], userInputParser.inputId(),
                                 new Worker(userInputParser.inputName(), userInputParser.inputCoordinates(), userInputParser.inputSalary(), userInputParser.inputStartDate(), userInputParser.inputEndDate(), userInputParser.inputStatus(), userInputParser.inputOrganization()), authentication.getCurrentUser()));

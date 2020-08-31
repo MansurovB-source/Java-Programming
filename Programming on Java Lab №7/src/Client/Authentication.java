@@ -22,6 +22,7 @@ public class Authentication {
     }
 
     public void authentication() {
+        String command = "";
         System.out.println("Введите логин (mail): ");
         while (true) {
             login = in.nextLine();
@@ -30,9 +31,9 @@ public class Authentication {
                 currentUser = connection.getUser();
                 if (currentUser != null) {
                     System.out.println("Введите пароль:");
+                    break;
                 } else {
                     System.out.println("Пользователь с таким логином не найден. Хотите зарегистрироваться?");
-                    String command;
                     do {
                         System.out.println("Введите Y/N");
                         command = in.nextLine().toLowerCase();
@@ -41,9 +42,9 @@ public class Authentication {
                         System.out.println("Хотите автоматически генерированный пароль?");
                         do {
                             System.out.println("Введите Y/N");
-                            command = in.nextLine().toLowerCase();
-                        } while (!(command.equals("y") || command.equals("n")));
-                        if (command.equals("y")) {
+                            command += in.nextLine().toLowerCase();
+                        } while (!(command.equals("yy") || command.equals("yn")));
+                        if (command.equals("yy")) {
                             System.out.println("Генерируем пароль...");
                             password = null;
                         } else {
@@ -51,7 +52,7 @@ public class Authentication {
                             password = in.nextLine();
                         }
                         connection.sendRequest(new Request("sign_up", login, password));
-                        if (command.equals("n")) {
+                        if (command.equals("yy")) {
                             currentUser = connection.getUser();
                             if (currentUser.getPassword() != null) {
                                 System.out.println("Введите пароль, который был отправлен на ваш e-mail:");
@@ -59,26 +60,44 @@ public class Authentication {
                             } else {
                                 System.out.println("Не удалось отправить письмо на " + login + "\nВведите другой e-mail:");
                             }
+                        } else {
+                            break;
                         }
+                    } else {
+                        break;
                     }
                 }
             } else {
                 System.out.println("Вы ввели e-mail в неверном формате. Попробуйте снова:");
             }
         }
-        sing_in();
+        if(!command.equals("n")) {
+            sing_in();
+        }
     }
 
     private void sing_in() {
-        while (true) {
-            password = in.nextLine();
-            connection.sendRequest(new Request("sing_in", login, password));
+        if(password != null) {
+            connection.sendRequest(new Request("sign_in", login, password));
             currentUser = connection.getUser();
+            //System.out.println(currentUser.getPassword() + " " + currentUser.getLogin());
             if (currentUser != null) {
                 System.out.println("Добро пожаловать, " + currentUser.getLogin().split("@")[0]);
-                break;
             } else {
                 System.out.println("Вы ввели неверный пароль. Попробуйте снова:");
+            }
+        } else {
+            while (true) {
+                password = in.nextLine();
+                connection.sendRequest(new Request("sign_in", login, password));
+                currentUser = connection.getUser();
+                //System.out.println(currentUser.getPassword() + " " + currentUser.getLogin());
+                if (currentUser != null) {
+                    System.out.println("Добро пожаловать, " + currentUser.getLogin().split("@")[0]);
+                    break;
+                } else {
+                    System.out.println("Вы ввели неверный пароль. Попробуйте снова:");
+                }
             }
         }
     }

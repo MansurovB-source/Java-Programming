@@ -13,6 +13,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.Random;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,15 +41,20 @@ public class UserManager {
 
     User singUp(String login, String password) {
         String pass = password;
+        String hashPassword;
+        User user = null;
         if (pass == null) {
             pass = generatePassword();
-        }
-        if (sendMessage(login, pass)) {
-            String hashPassword = hashPassword(pass);
-            User user = new User(login, hashPassword);
-            if (dataBaseManager.singUp(user)) {
-                return user;
+            hashPassword = hashPassword(pass);
+            if (sendMessage(login, pass)) {
+                user = new User(login, hashPassword);
             }
+        } else {
+            hashPassword = hashPassword(pass);
+            user = new User(login, hashPassword);
+        }
+        if (dataBaseManager.singUp(user)) {
+            return user;
         }
         return null;
     }

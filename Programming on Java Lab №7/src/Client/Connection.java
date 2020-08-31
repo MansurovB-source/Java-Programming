@@ -21,7 +21,7 @@ public class Connection {
     private final int PORT;
     ByteBuffer byteBuffer = ByteBuffer.allocate(10240);
     byte[] bytes;
-    User user = null;
+    User user;
 
     public User getUser() {
         return user;
@@ -42,7 +42,10 @@ public class Connection {
                 ByteBuffer buffer = ByteBuffer.allocate(baos.size());
                 buffer.put(baos.toByteArray());
                 buffer.flip();
-                channel.write(buffer);
+                while (buffer.hasRemaining()) {
+                    channel.write(buffer);
+                }
+                buffer.clear();
                 int read = channel.read(byteBuffer);
                 if (read != -1) {
                     bytes = new byte[read];
@@ -51,10 +54,11 @@ public class Connection {
                     }
                     ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
                     ObjectInputStream ois = new ObjectInputStream(bais);
-                    if(request.equals("is_registered") || request.equals("sign_in") || request.equals("sign_up")) {
+                    if(request.getRequest().equals("is_registered") || request.getRequest().equals("sign_in") || request.getRequest().equals("sign_up")) {
                         user = (User) ois.readObject();
+                        byteBuffer.clear();
                     } else {
-                        System.out.println((String) ois.readObject());
+                        System.out.println(ois.readObject());
                         byteBuffer.clear();
                     }
                 }
@@ -68,8 +72,7 @@ public class Connection {
         }catch (ConnectionException e) {
             System.out.println("Ошибка подключения к серверу");
         } catch (IOException e) {
-            System.out.println("Ошибка!!!");
-            e.printStackTrace();
+            System.out.println("Ошибка!!!" + e.getMessage());
         }
     }
 

@@ -57,55 +57,50 @@ public class RequestHandler implements Runnable{
 
             switch (command) {
                 case "help":
-                    oos.writeObject(workerManager.help());
+                    oos.writeObject(workerManager.help(user));
                     break;
                 case "info":
-                    oos.writeObject(workerManager.info());
+                    oos.writeObject(workerManager.info(user));
                     break;
                 case "show":
-                    oos.writeObject(workerManager.show());
+                    oos.writeObject(workerManager.show(user));
                     break;
                 case "add":
-                    oos.writeObject(workerManager.add(worker));
+                    oos.writeObject(workerManager.add(worker, user));
                     break;
                 case "update_by_id":
-                    oos.writeObject(workerManager.updateById(id, worker));
+                    oos.writeObject(workerManager.updateById(id, worker, user));
                     break;
                 case "remove_by_id":
-                    oos.writeObject(workerManager.removeById(id));
-                    break;
-                case "clear":
-                    oos.writeObject(workerManager.clear());
-                    break;
-                case "save_server":
-                case "exit":
-                    workerManager.save();
-                    oos.writeObject("Коллекция сохранена в файл на сервере");
+                    oos.writeObject(workerManager.removeById(id, user));
                     break;
                 case "remove_first":
-                    oos.writeObject(workerManager.removeFirst());
+                    oos.writeObject(workerManager.removeFirst(user));
                     break;
                 case "remove_last":
-                    oos.writeObject(workerManager.removeLast());
+                    oos.writeObject(workerManager.removeLast(user));
                     break;
                 case "shuffle":
-                    oos.writeObject(workerManager.shuffle());
+                    oos.writeObject(workerManager.shuffle(user));
                     break;
                 case "remove_any_by_start_date":
-                    oos.writeObject(workerManager.removeAnyByStartDate(startdate));
+                    oos.writeObject(workerManager.removeAnyByStartDate(startdate, user));
                     break;
                 case "max_by_id":
-                    oos.writeObject(workerManager.maxById());
+                    oos.writeObject(workerManager.maxById(user));
                     break;
                 case "count_less_than_organization":
-                    oos.writeObject(workerManager.countLessThanOrganization(organization));
+                    oos.writeObject(workerManager.countLessThanOrganization(organization, user));
                     break;
                 case "is_registered":
                     oos.writeObject(userManager.isRegistered(login));
+                    break;
                 case "sign_up":
                     oos.writeObject(userManager.singUp(login, password));
+                    break;
                 case "sign_in":
                     oos.writeObject(userManager.signIn(login,password));
+                    break;
             }
             ByteBuffer byteBuffer = ByteBuffer.allocate(bais.size());
             byteBuffer.put(bais.toByteArray());

@@ -1,11 +1,14 @@
 package Common;
 
+import java.io.Serializable;
+
 /**
  * Created by IntelliJ IDEA.
  *
  * @author Behruz Mansurov
  */
-public class User {
+public class User implements Serializable {
+    static final long serialVersionUID = -1160578898668997571L;
     String login;
     String password;
 
